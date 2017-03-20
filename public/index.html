@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+<title>SSH Client</title>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<style>
+   body {
+     margin: 0;
+     padding: 0;
+     background: black;
+   }
+   .terminal {
+     font-family: monospace;
+	 font-size: 2em;
+     color: white;
+   }
+   .terminal:after {
+	content:"|";
+	opacity: 0;
+	animation: cursor 1s infinite;
+    }
+    @keyframes cursor {
+    	0% {
+    		opacity: 0;
+    	}
+    	40% {
+    		opacity: 0;
+    	}
+    	50% {
+    		opacity: 1;
+    	}
+    	90% {
+    		opacity: 1;
+    	}
+    	100% {
+    		opacity: 0;
+    	}
+    }
+</style>
+</head>
+<body>
+<center><h1 style="background: gray;">My SSH</h1></center>
+<div class="terminal">
+</div>
+<script>
+    // Connect to the socket.io server
+    var socket = io.connect('https://workspaces-huytr225.c9users.io:8080');
+    // Wait for data from the server
+    socket.on('output', function (data) {
+       // Insert some line breaks where they belong
+       data = data.replace("\n", "<br>");
+       data = data.replace("\r", "<br>");
+       // Append the data to our terminal
+       $('.terminal').append(data);
+    });
+    var command = "";
+    // Listen for user input and pass it to the server
+      
+    $(document).on("keypress",function(e){
+        var char = String.fromCharCode(e.which);
+        console.log(e);
+        socket.emit("input", char);
+        // command += char;
+        // if(e.which === 108){
+        //     socket.emit("input", command);
+        //     command = "";
+        // }
+    });
+</script>
+</body>
+</html>
